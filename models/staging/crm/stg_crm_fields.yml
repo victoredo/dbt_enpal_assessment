@@ -1,0 +1,29 @@
+version: 2
+
+models:
+
+  - name: stg_crm_fields
+    description: >
+      Staged field metadata. Cleans the raw field_value_options column:
+      casts to text, nullifies empty strings, and removes CSV double-escaped
+      quotes to produce valid JSON for downstream parsing.
+    columns:
+      - name: field_id
+        description: "Primary key — sourced from fields.id"
+        data_tests: 
+          - not_null
+          - unique
+      - name: field_key
+        description: "Machine-readable field identifier"
+        data_tests:
+          - not_null
+          - unique
+      - name: field_name
+        description: "Human-readable field display name"
+        data_tests:
+          - not_null
+          - unique
+      - name: field_value_options
+        description: >
+          Cleaned JSON string of valid enum options. Null for scalar fields.
+          Valid JSON array of {id, label} objects ready for downstream parsing.

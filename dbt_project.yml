@@ -15,6 +15,12 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
+dispatch:
+  - macro_namespace: dbt
+    search_order:
+      - enpal_assessment_project
+      - dbt
+
 
 models:
   +persist_docs:

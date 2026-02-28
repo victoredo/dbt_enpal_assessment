@@ -7,7 +7,6 @@ sources:
     schema: public
 
     tables:
-
       - name: fields
         description: >
           Metadata catalog describing all CRM field keys and their valid enum option values.
@@ -16,19 +15,10 @@ sources:
         columns:
           - name: id
             description: "Surrogate primary key for the field"
-            tests: 
-              - not_null
-              - unique
           - name: field_key
             description: "Machine-readable field identifier used in deal_changes.changed_field_key"
-            tests: 
-              - not_null
-              - unique
           - name: name
             description: "Human-readable display name for the field"
-            tests: 
-              - not_null
-              - unique
           - name: field_value_options
             description: >
               JSON array of valid enum options for this field. Format: [{id, label}, ...].
