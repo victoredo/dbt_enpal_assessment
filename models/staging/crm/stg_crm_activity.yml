@@ -1,0 +1,45 @@
+version: 2
+
+models:
+
+  - name: stg_crm_activity
+    description: >
+      Staged activity events. Renames columns, casts timestamps, and
+      standardizes boolean flags. One row per activity instance.
+    columns:
+      - name: _surrogate_key
+        description: "Surrogate key — sourced from combination of activity id and deal id"
+        data_tests: 
+          - not_null
+          - unique
+      
+      - name: activity_id
+        description: "Primary key — sourced from activity.activity_id"
+        data_tests: 
+          - not_null
+
+      - name: deal_id
+        description: "Foreign key to the associated deal"
+        data_tests: 
+          - not_null
+
+      - name: user_id
+        description: "Foreign key to the assigned user"
+        data_tests: 
+          - not_null
+
+      - name: activity_type_key
+        description: "Activity type code — joins to stg_activity_types.activity_type_key"
+        data_tests: 
+          - not_null
+
+      - name: is_done
+        description: "True if the activity has been completed"
+        data_tests: 
+          - not_null
+    
+      - name: due_at
+        description: "Scheduled due timestamp for the activity"
+        data_tests: 
+          - not_null
+          

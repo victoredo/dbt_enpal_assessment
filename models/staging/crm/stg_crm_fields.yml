@@ -13,16 +13,19 @@ models:
         data_tests: 
           - not_null
           - unique
+
       - name: field_key
         description: "Machine-readable field identifier"
         data_tests:
           - not_null
           - unique
+
       - name: field_name
         description: "Human-readable field display name"
         data_tests:
           - not_null
           - unique
+          
       - name: field_value_options
         description: >
           Cleaned JSON string of valid enum options. Null for scalar fields.

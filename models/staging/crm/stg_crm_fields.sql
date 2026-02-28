@@ -27,7 +27,7 @@ formatted AS (
         -- Metadata
         CAST(field_value_options AS JSON) AS  field_value_options
 
-    from source_data
+    FROM source_data
 
 )
 
