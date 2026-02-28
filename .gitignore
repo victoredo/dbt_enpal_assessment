@@ -6,5 +6,3 @@ edr_target/
 .user.yml
 package-lock.yml
 dbt_internal_packages/
-raw_data/
-init.sql

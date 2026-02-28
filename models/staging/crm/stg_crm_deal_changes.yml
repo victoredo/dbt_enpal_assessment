@@ -1,0 +1,36 @@
+version: 2
+
+models:
+
+  - name: stg_crm_deal_changes
+    description: >
+      Staged deal change event log. Renames columns and casts change_time
+      to a proper timestamp. One row per field change per deal.
+    columns:
+      - name: _surrogate_key
+        description: "Surrogate key — sourced from combination of deal id and change time"
+        data_tests: 
+          - not_null
+          - unique
+
+      - name: deal_id
+        description: "Foreign key to the deal being changed"
+        data_tests: 
+          - not_null  
+
+      - name: changed_field_key
+        description: "The field that was changed"
+        data_tests: 
+          - not_null
+          - accepted_values:
+              values: ['add_time', 'user_id', 'stage_id', 'lost_reason']
+
+      - name: new_value
+        description: "The new value set on the field"
+        data_tests: 
+          - not_null
+          
+      - name: changed_at
+        description: "Timestamp when the field change occurred"
+        data_tests: 
+          - not_null

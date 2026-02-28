@@ -45,3 +45,6 @@ CREATE TABLE users (
     email VARCHAR(255),
     modified TIMESTAMP
 );
+
+-- Enables pgcrypto, allowing Postgres to hash data using digest() and convert it to readable hex with encode().
+CREATE EXTENSION IF NOT EXISTS pgcrypto;

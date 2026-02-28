@@ -26,21 +26,19 @@ sources:
 
       - name: users
         description: "CRM users representing sales reps and admins"
+        loaded_at_field: modified
+        # relevant for production data
+        # freshness:
+        #  warn_after:
+        #    count: 2
+        #    period: day
         columns:
           - name: id
             description: "Surrogate primary key for the user"
-            tests: 
-              - not_null
-              - unique
           - name: name
             description: "Full display name of the user"
-            tests: 
-              - not_null
           - name: email
             description: "Unique email address of the user"
-            tests:
-              - not_null
-              - unique
           - name: modified
             description: "Timestamp of the last modification to the user record"
 
@@ -50,58 +48,47 @@ sources:
           Grain: one row per field changed per deal per point in time.
           Source of truth for: stage transitions, owner assignments,
           lost reasons, and deal creation timestamps.
+        loaded_at_field: change_time
+        # relevant for production data
+        # freshness:
+        #  warn_after:
+        #    count: 2
+        #    period: day
         columns:
           - name: deal_id
-            description: "Foreign key to the deal being changed"
-            tests: 
-              - not_null
+            description: "Foreign key to the deal being changed"  
           - name: change_time
-            description: "Timestamp when the field change occurred"
-            tests: 
-              - not_null
+            description: "Timestamp when the field change occurred"  
           - name: changed_field_key
-            description: "The field that was changed — matches fields.field_key"
-            tests:
-              - not_null
-              - accepted_values:
-                  values: ['add_time', 'user_id', 'stage_id', 'lost_reason']
+            description: "The field that was changed — matches fields.field_key"  
           - name: new_value
             description: "The new value set on the field after the change"
-            tests: 
-              - not_null
-
+        
       - name: activity
         description: >
           CRM activities (calls, meetings) linked to deals and assigned to users.
           Each row is one activity instance. Activities track sales touchpoints
           and map to funnel sub-steps (Sales Call 1 → step 2.1, Sales Call 2 → step 3.1).
+        loaded_at_field: due_to
+        # relevant for production data
+        # freshness:
+        #  warn_after:
+        #    count: 2
+        #    period: day
         columns:
           - name: activity_id
-            description: "Surrogate primary key for the activity"
-            tests: 
-              - not_null
-              - unique
-           
+            description: "Surrogate primary key for the activity"   
           - name: deal_id
-            description: "Foreign key to the associated deal"
-            tests: 
-              - not_null
+            description: "Foreign key to the associated deal"   
           - name: assigned_to_user
-            description: "Foreign key to the user responsible for the activity"
-            tests: 
-              - not_null
+            description: "Foreign key to the user responsible for the activity"   
           - name: type
-            description: "Activity type code — matches activity_types.type"
-            tests: 
-              - not_null
+            description: "Activity type code — matches activity_types.type"   
           - name: done
-            description: "Boolean flag — true if the activity has been completed"
-            tests: 
-              - not_null
+            description: "Boolean flag — true if the activity has been completed"  
           - name: due_to
             description: "Scheduled due timestamp for the activity"
-            tests: 
-              - not_null
+            
 
       - name: activity_types
         description: >

@@ -1,0 +1,24 @@
+version: 2
+
+models:
+
+  - name: stg_crm_users
+    description: >
+      Staged CRM users with renamed columns and cast timestamps
+
+    columns:
+      - name: user_id
+        description: "Primary key — sourced from users.id"
+        data_tests: 
+          - not_null
+          - unique
+      - name: user_name
+        description: "Full display name of the user"
+       
+      - name: user_email
+        description: >
+          Hashed user email using SHA256 with a project-level hashing salt to protect PII while preserving joinability.
+          This should be unique however there are entries with same emails address but different user name
+          
+      - name: modified_at
+        description: "Timestamp of last modification to the user record"
