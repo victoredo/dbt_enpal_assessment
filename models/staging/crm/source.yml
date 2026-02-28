@@ -1,0 +1,157 @@
+version: 2
+
+sources:
+  - name: crm
+    description: >
+      Raw CRM data loaded from the Postgres public schema.
+    schema: public
+
+    tables:
+
+      - name: fields
+        description: >
+          Metadata catalog describing all CRM field keys and their valid enum option values.
+          Fields with options store a JSON array in field_value_options.
+          Fields without options (scalar fields) have a null value there.
+        columns:
+          - name: id
+            description: "Surrogate primary key for the field"
+            tests: 
+              - not_null
+              - unique
+          - name: field_key
+            description: "Machine-readable field identifier used in deal_changes.changed_field_key"
+            tests: 
+              - not_null
+              - unique
+          - name: name
+            description: "Human-readable display name for the field"
+            tests: 
+              - not_null
+              - unique
+          - name: field_value_options
+            description: >
+              JSON array of valid enum options for this field. Format: [{id, label}, ...].
+              Null for scalar fields like add_time and user_id.
+
+      - name: users
+        description: "CRM users representing sales reps and admins"
+        columns:
+          - name: id
+            description: "Surrogate primary key for the user"
+            tests: 
+              - not_null
+              - unique
+          - name: name
+            description: "Full display name of the user"
+            tests: 
+              - not_null
+          - name: email
+            description: "Unique email address of the user"
+            tests:
+              - not_null
+              - unique
+          - name: modified
+            description: "Timestamp of the last modification to the user record"
+
+      - name: deal_changes
+        description: >
+          Append-only event log capturing every field-level change on a deal.
+          Grain: one row per field changed per deal per point in time.
+          Source of truth for: stage transitions, owner assignments,
+          lost reasons, and deal creation timestamps.
+        columns:
+          - name: deal_id
+            description: "Foreign key to the deal being changed"
+            tests: 
+              - not_null
+          - name: change_time
+            description: "Timestamp when the field change occurred"
+            tests: 
+              - not_null
+          - name: changed_field_key
+            description: "The field that was changed — matches fields.field_key"
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['add_time', 'user_id', 'stage_id', 'lost_reason']
+          - name: new_value
+            description: "The new value set on the field after the change"
+            tests: 
+              - not_null
+
+      - name: activity
+        description: >
+          CRM activities (calls, meetings) linked to deals and assigned to users.
+          Each row is one activity instance. Activities track sales touchpoints
+          and map to funnel sub-steps (Sales Call 1 → step 2.1, Sales Call 2 → step 3.1).
+        columns:
+          - name: activity_id
+            description: "Surrogate primary key for the activity"
+            tests: 
+              - not_null
+              - unique
+           
+          - name: deal_id
+            description: "Foreign key to the associated deal"
+            tests: 
+              - not_null
+          - name: assigned_to_user
+            description: "Foreign key to the user responsible for the activity"
+            tests: 
+              - not_null
+          - name: type
+            description: "Activity type code — matches activity_types.type"
+            tests: 
+              - not_null
+          - name: done
+            description: "Boolean flag — true if the activity has been completed"
+            tests: 
+              - not_null
+          - name: due_to
+            description: "Scheduled due timestamp for the activity"
+            tests: 
+              - not_null
+
+      - name: activity_types
+        description: >
+          Lookup table defining valid activity type codes and their display names.
+          The is_active flag controls whether a type is in operational use.
+        columns:
+          - name: id
+            description: "Surrogate primary key for the activity type"
+            tests: 
+              - not_null
+              - unique
+          - name: type
+            description: "Machine-readable type code — joins to activity.type"
+            tests:
+              - not_null
+              - unique
+          - name: name
+            description: "Human-readable display name for the activity type"
+            tests: 
+              - not_null
+         
+          - name: active
+            description: "String flag indicating if the type is active (Yes/No)"
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['Yes', 'No']
+
+      - name: stages
+        description: >
+          Lookup table mapping stage IDs to their display names.
+          Stages represent the ordered steps of the sales pipeline.
+        columns:
+          - name: stage_id
+            description: "Surrogate primary key and funnel order indicator"
+            tests: 
+              - not_null
+              - unique
+          - name: stage_name
+            description: "Human-readable stage name"
+            tests: 
+              - not_null
+        
