@@ -1,0 +1,36 @@
+version: 2
+
+models:
+
+  - name: int_crm_deal_stage_transitions
+    description: >
+      Filtered and enriched view of deal_changes scoped to stage transition events only.
+      One row per deal per stage entered. Joins stage names so downstream models
+      never need to re-join the stages lookup.
+      Consumed by fct_deal_changes in the mart layer.
+    columns:
+      - name: deal_id
+        description: "Foreign key to the deal"
+        data_tests: 
+          - not_null
+          
+      - name: stage_id
+        description: "The stage the deal transitioned into"
+        data_tests: 
+          - not_null
+          
+      - name: stage_name
+        description: "Human-readable stage name"
+        data_tests: 
+          - not_null
+          
+      - name: entered_stage_at
+        description: "Timestamp when the deal entered this stage"
+        data_tests: 
+          - not_null
+          
+      - name: entered_stage_month
+        description: "Truncated month of entry — used for monthly aggregations"
+        data_tests: 
+          - not_null
+         
