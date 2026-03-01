@@ -65,7 +65,8 @@ enriched AS (
 formatted AS (
 
     SELECT 
-        
+        --SK
+        {{ dbt_utils.generate_surrogate_key(['deal_id', 'stage_id','entered_stage_at']) }} AS _surrogate_key,
         -- FK
         deal_id,
         stage_id,

@@ -9,6 +9,12 @@ models:
       never need to re-join the stages lookup.
       Consumed by fct_deal_changes in the mart layer.
     columns:
+      - name: _surrogate_key
+        description: "Surrogate key — sourced from combination of deal id, stage_id,entered_stage_at"
+        data_tests: 
+          - not_null
+          - unique
+
       - name: deal_id
         description: "Foreign key to the deal"
         data_tests: 
