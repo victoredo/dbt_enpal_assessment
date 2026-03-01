@@ -1,0 +1,32 @@
+version: 2
+
+models:
+
+  - name: int_crm_fields
+    description: >
+      Unpacked field catalog. Expands the JSON array in field_value_options_raw
+      into one row per enum option. Scalar fields are included with null option columns.
+      This model is the single source of truth for all field metadata and enum decoding
+      across the project — consumed by dim_fields in the mart layer.
+    columns:
+      - name: _surrogate_key
+        description: "Surrogate key — sourced from combination of field_id and option_id"
+        data_tests: 
+          - not_null
+          - unique
+
+      - name: field_id
+        description: "Primary key of the field"
+        data_tests:
+          - not_null
+  
+      - name: field_key
+        description: "Field identifier"
+        data_tests:
+          - not_null
+         
+      - name: field_name
+        description: "Field display name"
+        data_tests:
+          - not_null
+   
