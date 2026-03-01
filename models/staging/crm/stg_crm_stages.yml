@@ -1,0 +1,19 @@
+version: 2
+
+models:
+
+  - name: stg_crm_stages
+    description: >
+      Staged pipeline stage lookup with cast stage_id
+    columns:
+      - name: stage_id
+        description: "Primary key and natural funnel order indicator"
+        data_tests: 
+          - not_null
+          - unique
+          
+      - name: stage_name
+        description: "Human-readable stage display name"
+        data_tests: 
+          - not_null
+          
