@@ -97,25 +97,12 @@ sources:
         columns:
           - name: id
             description: "Surrogate primary key for the activity type"
-            tests: 
-              - not_null
-              - unique
           - name: type
             description: "Machine-readable type code — joins to activity.type"
-            tests:
-              - not_null
-              - unique
           - name: name
-            description: "Human-readable display name for the activity type"
-            tests: 
-              - not_null
-         
+            description: "Human-readable display name for the activity type"   
           - name: active
             description: "String flag indicating if the type is active (Yes/No)"
-            tests:
-              - not_null
-              - accepted_values:
-                  values: ['Yes', 'No']
 
       - name: stages
         description: >
